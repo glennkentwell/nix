@@ -1,0 +1,98 @@
+
+Macbook setup
+2024-10-18
+
+
+- nix homebrew
+	https://github.com/zhaofengli/nix-homebrew
+	
+
+- Migrate from Homebrew to nix-darwin
+	https://discourse.nixos.org/t/migrating-from-homebrew-to-nix-for-osx/2892
+
+
+	Dump existing homebrew stuffs
+		 brew bundle dump --no-restart 
+				and save to ~/.Brewfile.
+
+		brew leaves
+	
+		brew bundle install --global --verbose --no-upgrade
+		brew bundle check --global --verbose
+		brew bundle cleanup --global --force
+
+	  brew unlink instead of brew uninstall,
+	  nix-env -q (or nix-env -qaP) with brew info to check versions
+
+		- have a look at: https://github.com/jwiegley/nix-config
+
+- Nix-darwin setup for an m3 mac
+	https://github.com/torgeir/nix-darwin/blob/main/readme.org
+
+	
+
+- system settings:
+	- key repeat rate: fastest
+	- delay until repeat: second shortest
+	- use f1, f2 etc as standard function keys
+	- enable Full Keyboard Access
+
+	- All Input Sources
+		- disable 'capitalise words automatically'
+		- disable 'add full stop with double-space'
+		- disable 'Use smart quotes and dashes'
+
+
+	# globe/fn key emoji
+	defaults write com.apple.HIToolbox AppleFnUsageType -int "2"
+	# F keys normal
+	defaults write NSGlobalDomain com.apple.keyboard.fnState -bool true
+
+	# keyboard delays to second-fastest settings
+	defaults write NSGlobalDomain InitialKeyRepeat -int 25
+	defaults write NSGlobalDomain KeyRepeat -int 2
+
+	# 
+	
+	defaults read NSGlobalDomain InitialKeyRepeat 25
+	defaults read NSGlobalDomain KeyRepeat 2        
+
+- updates:
+	- install Sequoia
+
+- install from App Store:
+	- 1Password
+
+- nix
+	- install
+		- curl cmd
+		- determinate installer: 
+		- determinate gui installer and one-click: https://determinate.systems/posts/graphical-nix-installer/
+
+	- nix profile install nixpkgs#devenv 
+	
+    - uninstall nix
+    - reinstall nix using the determinate systems installer (enables flakes and nix unified CLI by default)
+
+	/etc/nix/nix.conf
+		experimental-features = nix-command flakes
+
+	- determinate installer
+		https://zero-to-nix.com/concepts/nix-installer
+
+- nix-darwin
+	https://github.com/LnL7/nix-darwin?tab=readme-ov-file#flakes
+
+	mkdir -p ~/.config/nix-darwin
+	nix flake init -t nix-darwin
+  nix run nix-darwin -- switch --flake ~/.config/nix-darwin
+  darwin-help
+	darwin-rebuild switch --flake ~/.config/nix-darwin	
+
+- home-manager
+	nix build "https://flakehub.com/f/nix-community/home-manager/*"
+
+	home manager option search
+	https://home-manager-options.extranix.com
+
+
