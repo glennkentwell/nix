@@ -30,7 +30,7 @@
 		ezno
 		rslint		# rust linter
 		yamllint
-		
+		gh
 
     iterm2
 		# sublime # not on aarch64
