@@ -1,57 +1,67 @@
 {
-  description = "Example Darwin system flake";
-
   inputs = {
     # nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    nixpkgs-darwin.url = "github:LnL7/nix-darwin";
-    darwin = {
-      url = "github:LnL7/nix-darwin";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
-    homebrew-core = {
-      url = "github:homebrew/homebrew-core";
-      flake = false;
-    };
-    homebrew-cask = {
-      url = "github:homebrew/homebrew-cask";
-      flake = false;
-    };
+    systems.url = "github:nix-systems/default";
   };
 
-  outputs = inputs@{ self, nixpkgs-darwin, darwin, nixpkgs, nix-homebrew
-    , homebrew-core, homebrew-cask }:
+  outputs =
+    { systems, nixpkgs, ... }@inputs:
     let
-      username = "glenn";
-      system = "aarch64-darwin"; # or x86_64_darwin
-      hostname = "dabble-K4QRVMFV4H";
+      eachSystem = f: nixpkgs.lib.genAttrs (import systems) (system: f nixpkgs.legacyPackages.${system});
+    in
+    {
+      devShells = eachSystem (pkgs: {
+        default = pkgs.mkShell {
+          buildInputs = [
+            pkgs.nodejs
 
-      specialArgs = inputs // { inherit username hostname; };
-    in {
-      # Build darwin flake using:
-      # $ darwin-rebuild build --flake .#g3k
-      # darwinConfigurations."${hostname}" = darwin.lib.darwinSystem {
-			darwinConfigurations.dabble-K4QRVMFV4H = darwin.lib.darwinSystem {
-        inherit system specialArgs;
-        modules = [
-          ./modules/nix-core.nix
-          ./modules/system.nix
-          ./modules/apps.nix
+            # You can set the major version of Node.js to a specific one instead
+            # of the default version
+            # pkgs.nodejs-22_x
 
-          # ./modules/host-users.nix
+            # Comment out one of these to use an alternative package manager.
+            # pkgs.yarn
+            # pkgs.pnpm
+            # pkgs.bun
 
-          # home-manager.darwin-modules.home-manager
-          # {
-          #	home-manager.useGlobalPkgs = true;
-          #	home-manager.useUserPackages = true;
-          #	home-manager.users.glenn = import ./home.nix
-          #};
-        ];
-      };
-
-      # Expose the package set, including overlays, for convenience.
-      # darwinPackages = self.darwinConfigurations."$hostname".pkgs;
-      darwinPackages.buggery = self.darwinConfigurations.dabble-K4QRVMFV4H.pkgs;
+            pkgs.nodePackages.typescript
+            pkgs.nodePackages.typescript-language-server
+            pkgs.kubectl
+            pkgs.kubectx
+            # pkgs.kafkacat
+            pkgs.curl
+            pkgs.git
+            pkgs.docker
+            pkgs.vim
+            pkgs.fzf
+            pkgs.jq
+            pkgs.yq
+            pkgs.coreutils
+            pkgs.ripgrep
+            pkgs.postgresql
+            pkgs.netcat
+            pkgs.inetutils
+            pkgs.tmux
+            pkgs.screen
+            pkgs.github-cli
+            pkgs.act
+            pkgs.direnv
+            pkgs.tailscale
+            pkgs.angle-grinder
+            pkgs.redis
+                        # (pkgs.callPackage ({ fetchFromGitHub, buildGoModule }: buildGoModule {
+                        #   pname = "gmh-cli";
+                        #   version = "latest";
+                        #   src = fetchFromGitHub {
+                        #     owner = "gemhome";
+                        #     repo = "gmh-cli";
+                        #     rev = "main";
+                        #     sha256 = "sha256-1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef";
+                        #   };
+                        #   vendorSha256 = null;
+                        # }) {})
+          ];
+        };
+      });
     };
 }

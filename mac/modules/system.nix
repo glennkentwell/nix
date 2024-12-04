@@ -15,8 +15,18 @@
     defaults = {
       menuExtraClock.Show24Hour = true; # show 24 hour clock
 
-      # other macOS's defaults configuration.
-      # ......
+      # com.apple.HIToolbox AppleFnUsageType -int "2"
+      com.apple.HIToolbox.AppleFnUsageType = 2;
+
+     	# F keys normal
+    	# defaults write NSGlobalDomain com.apple.keyboard.fnState -bool true
+      com.apple.keyboard.fnState = true;
+
+      # keyboard delays to second-fastest settings
+      # defaults write NSGlobalDomain InitialKeyRepeat -int 25
+      # defaults write NSGlobalDomain KeyRepeat -int 2
+      InitialKeyRepeat = 25;
+      KeyRepeat = 2;
     };
   };
 

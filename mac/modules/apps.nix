@@ -21,7 +21,7 @@
     rectangle
 
     pulumi-bin
-    
+
 		node2nix
 		pnpm
 		dum
@@ -44,7 +44,7 @@
     tubekit # but also: $ nix profile install github:reconquest/tubekit
 
   ];
-  environment.extraInit = "	export PATH=$HOME/bin:$PATH\n";
+  environment.extraInit = "export PATH=$HOME/bin:$PATH\n";
   environment.variables.EDITOR = "nvim";
 
   homebrew = {
