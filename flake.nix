@@ -5,59 +5,71 @@
   };
 
   outputs =
-    { systems, nixpkgs, ... }@inputs:
+    { self, systems, nixpkgs, ... }@inputs:
     let
       eachSystem = f: nixpkgs.lib.genAttrs (import systems) (system: f nixpkgs.legacyPackages.${system});
     in
     {
-      devShells = eachSystem (pkgs: {
+      packages = eachSystem (pkgs: {
         default = pkgs.mkShell {
-          buildInputs = [
+          packages = with pkgs; [
+            # basic
+            git
+            vim
+            fzf
+            jq
+            yq
+            coreutils
+            ripgrep
+            tmux
+            screen
+            direnv
+            zsh
+            angle-grinder
+
+            # net
+            curl
+            netcat
+            inetutils
+            nmap
+
+            # db
+            postgresql
+            sqlite
+            duckdb
+            redis
+
+            # k8s, container
+            kubectl
+            kubectx
+            helmfile    # but https://nixos.wiki/wiki/Helm_and_Helmfile
+            # helm-kubernetes-wrapped
+            docker
+
+            # node
+            nodejs-18_x
+            pnpm
+            yarn
+            bun
+            deno
+            nodePackages.typescript
+            nodePackages.typescript-language-server
+
+            # python
+            python3
+            pyenv
+
+            #
+            github-cli
+            act
+            tailscale
+            # _1password-cli    # requires export NIXPKGS_ALLOW_UNFREE=1 and --impure
+
+            pulumictl
 
 
-            # You can set the major version of Node.js to a specific one instead
-            # of the default version
-            # pkgs.nodejs-22_x
-
-            # Comment out one of these to use an alternative package manager.
-            # pkgs.yarn
-            # pkgs.pnpm
-            # pkgs.bun
-
-
-            pkgs.nodePackages.typescript
-            pkgs.nodePackages.typescript-language-server
-            pkgs.kubectl
-            pkgs.kubectx
-            # pkgs.kafkacat
-            pkgs.curl
-            pkgs.git
-            pkgs.docker
-            pkgs.vim
-            pkgs.fzf
-            pkgs.jq
-            pkgs.yq
-            pkgs.coreutils
-            pkgs.ripgrep
-            pkgs.postgresql
-            pkgs.netcat
-            pkgs.inetutils
-            pkgs.tmux
-            pkgs.screen
-            pkgs.github-cli
-            pkgs.act
-            pkgs.direnv
-            pkgs.tailscale
-            pkgs.angle-grinder
-            pkgs.redis
-            pkgs.zsh
-
-            pkgs.nodejs-18_x
-            # pkgs.pulumi-bin
-            pkgs.pnpm
-
-            pkgs.python3
-                        # (pkgs.callPackage ({ fetchFromGitHub, buildGoModule }: buildGoModule {
+                # pulumi-bin
+                        # (callPackage ({ fetchFromGitHub, buildGoModule }: buildGoModule {
                         #   pname = "gmh-cli";
                         #   version = "latest";
                         #   src = fetchFromGitHub {
@@ -68,10 +80,11 @@
                         #   };
                         #   vendorSha256 = null;
                         # }) {})
-          ];
+            ];
 
           shellHook = ''
-              export AWS_CONFIG_FILE=
+              export AWS_PROFILE=sandbox
+              export AWS_REGION=ap-southeast-2
           '';
         };
       });
