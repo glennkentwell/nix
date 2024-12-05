@@ -13,7 +13,7 @@
       devShells = eachSystem (pkgs: {
         default = pkgs.mkShell {
           buildInputs = [
-            pkgs.nodejs
+
 
             # You can set the major version of Node.js to a specific one instead
             # of the default version
@@ -23,6 +23,7 @@
             # pkgs.yarn
             # pkgs.pnpm
             # pkgs.bun
+
 
             pkgs.nodePackages.typescript
             pkgs.nodePackages.typescript-language-server
@@ -49,6 +50,13 @@
             pkgs.tailscale
             pkgs.angle-grinder
             pkgs.redis
+            pkgs.zsh
+
+            pkgs.nodejs-18_x
+            pkgs.pulumi-bin
+            pkgs.pnpm
+
+            pkgs.python3
                         # (pkgs.callPackage ({ fetchFromGitHub, buildGoModule }: buildGoModule {
                         #   pname = "gmh-cli";
                         #   version = "latest";
@@ -61,7 +69,12 @@
                         #   vendorSha256 = null;
                         # }) {})
           ];
+
+          shellHook = ''
+              export AWS_CONFIG_FILE=
+          '';
         };
       });
     };
+
 }
