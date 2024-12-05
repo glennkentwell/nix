@@ -53,7 +53,7 @@
             pkgs.zsh
 
             pkgs.nodejs-18_x
-            pkgs.pulumi-bin
+            # pkgs.pulumi-bin
             pkgs.pnpm
 
             pkgs.python3
